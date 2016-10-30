@@ -6,7 +6,6 @@ COPY nginx_ElasticStack_Example /nginx_ElasticStack_Example
 
 WORKDIR /nginx_ElasticStack_Example
 
-RUN cat nginx_logs | logstash -f nginx_logstash.conf
+ENV LS_SETTINGS_DIR /etc/logstash
 
-ENTRYPOINT ["/logstash-entrypoint.sh"]
-CMD ["-e", ""]
+CMD cat nginx_logs | /logstash-entrypoint.sh -f nginx_logstash.conf

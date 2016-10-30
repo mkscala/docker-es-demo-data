@@ -12,7 +12,7 @@ tags:
 build:
 	rm -rf build && mkdir build
 	docker build -t $(NAME):$(VERSION) .; sleep 3;
-	sed -i.bu 's/docker image-.*-blue/docker image-$(shell docker images --format "{{.Size}}" $(NAME):$(VERSION))-blue/g' README.md
+	sed -i.bu 's/docker image-.*-blue/docker image-$(shell docker images --format "{{.Size}}" $(NAME):$(VERSION))-blue/g' ../README.md
 
 release:
 	rm -rf release && mkdir release
