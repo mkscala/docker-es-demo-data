@@ -2,10 +2,14 @@ FROM blacktop/logstash
 
 MAINTAINER blacktop, https://github.com/blacktop
 
-COPY nginx_ElasticStack_Example /nginx_ElasticStack_Example
-
-WORKDIR /nginx_ElasticStack_Example
+RUN apk-install curl
 
 ENV LS_SETTINGS_DIR /etc/logstash
 
-CMD cat nginx_logs | /logstash-entrypoint.sh -f nginx_logstash.conf
+COPY nginx_data /
+COPY ingest_data.sh /
+
+WORKDIR /nginx_data
+
+# Use Logstash to ingest data into Elasticsearch and Add Kibana Dashboard
+ENTRYPOINT /ingest_data.sh
