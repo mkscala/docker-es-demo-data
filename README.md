@@ -2,14 +2,14 @@ docker-es-demo-data
 ===================
 
 [![CircleCI](https://circleci.com/gh/blacktop/docker-es-demo-data.png?style=shield)](https://circleci.com/gh/blacktop/docker-es-demo-data)
-[![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org) [![Docker Stars](https://img.shields.io/docker/stars/blacktop/es-data.svg)](https://hub.docker.com/r/blacktop/es-data/) [![Docker Pulls](https://img.shields.io/docker/pulls/blacktop/es-data.svg)](https://hub.docker.com/r/blacktop/es-data/)
+[![License][license]](http://www.apache.org/licenses/LICENSE-2.0) [![Docker Stars](https://img.shields.io/docker/stars/blacktop/es-data.svg)](https://hub.docker.com/r/blacktop/es-data/) [![Docker Pulls](https://img.shields.io/docker/pulls/blacktop/es-data.svg)](https://hub.docker.com/r/blacktop/es-data/)
 [![Docker Image](https://img.shields.io/badge/docker image-321.2 MB-blue.svg)](https://hub.docker.com/r/blacktop/es-data/)
 
 Nginx Demo Data for Elasticsearch
 
 ### Dependencies
 
--	[gliderlabs/alpine:3.4](https://index.docker.io/_/gliderlabs/alpine/)
+-	[blacktop/logstash](https://hub.docker.com/r/blacktop/logstash/)
 
 ### Image Tags
 
@@ -51,3 +51,5 @@ Please update the [CHANGELOG.md](https://github.com/blacktop/docker-es-demo-data
 
 Apache License (Version 2.0)
 Copyright (c) Elastic.co
+
+[license]: https://img.shields.io/badge/licence-Apache%202.0-blue.svg
