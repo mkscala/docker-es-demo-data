@@ -1,3 +1,4 @@
 build
 *.tgz
 *.bu
+5.0/output/*

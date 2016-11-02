@@ -11,3 +11,8 @@ build
 release
 Makefile
 VERSION
+
+export_dashboards.py
+no-pic.patch
+output/
+beats-dashboards-5.0.0/

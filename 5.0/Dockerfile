@@ -33,15 +33,15 @@ RUN apk-install -t .build-deps \
   && cd $GOPATH/src/github.com/elastic/beats/libbeat/dashboards \
   && go build -ldflags "-s -w -X main.beat=" -o import_dashboards \
   && mv import_dashboards /bin/import_dashboards \
-  # && echo "Building ingest Go binary..." \
-  # && cd /go/src/ \
-  # && export GOPATH=/go \
-  # && go version \
-  # && go get -d \
-  # && go build -ldflags="-s -w" -o /bin/ingest \
+  && echo "Building ingest Go binary..." \
+  && cd /go/src/ \
+  && export GOPATH=/go \
+  && go version \
+  && go get -d \
+  && go build -ldflags="-s -w" -o /bin/ingest \
   # && chmod +x /bin/upx \
   # && upx --brute /bin/import_dashboards \
   && rm -rf /go /usr/local/go /usr/lib/go /tmp/* \
   && apk del --purge .build-deps
 
-ENTRYPOINT import_dashboards
+ENTRYPOINT ingest
