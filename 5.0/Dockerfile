@@ -10,11 +10,9 @@ ENV STACK 5.0.0
 # https://golang.org/issue/14851
 # COPY no-pic.patch /
 
-COPY nginx_data /nginx_data
-COPY main.go /go/src/main.go
-
 # ADD https://github.com/lalyos/docker-upx/releases/download/v3.91/upx /bin/upx
 
+COPY main.go /go/src/main.go
 RUN apk-install -t .build-deps \
                     ca-certificates \
                     build-base \
@@ -26,14 +24,14 @@ RUN apk-install -t .build-deps \
                     git \
                     go \
   && set -x \
-  && echo "Build [import-dashboard]" \
+  && echo "Build [import-dashboard] Go binary..." \
   && export GOPATH=/go \
   && go version \
   && git clone -b v$STACK https://github.com/elastic/beats.git $GOPATH/src/github.com/elastic/beats \
   && cd $GOPATH/src/github.com/elastic/beats/libbeat/dashboards \
   && go build -ldflags "-s -w -X main.beat=" -o import_dashboards \
   && mv import_dashboards /bin/import_dashboards \
-  && echo "Building ingest Go binary..." \
+  && echo "Building [ingest] Go binary..." \
   && cd /go/src/ \
   && export GOPATH=/go \
   && go version \
@@ -44,4 +42,7 @@ RUN apk-install -t .build-deps \
   && rm -rf /go /usr/local/go /usr/lib/go /tmp/* \
   && apk del --purge .build-deps
 
-ENTRYPOINT ingest
+COPY nginx_data /nginx_data
+COPY load.sh /load.sh
+
+ENTRYPOINT ["/load.sh"]

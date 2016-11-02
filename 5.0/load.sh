@@ -3,7 +3,7 @@
 set -e
 
 # Ingest data into Elasticsearch
-/ingest
+# ingest
 
 # Add Kibana Dashboard
-/import_dashboards -file /nginx_data/nginx-dashboard.zip
+import_dashboards -es http://elasticsearch:9200 -file /nginx_data/nginx-dashboard.zip
