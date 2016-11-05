@@ -2,13 +2,14 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"io/ioutil"
 	"os"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/dustin/go-humanize"
+	"golang.org/x/net/context"
 
-	elastic "gopkg.in/olivere/elastic.v3"
+	elastic "gopkg.in/olivere/elastic.v5"
 )
 
 func init() {
@@ -24,14 +25,16 @@ func init() {
 		log.Fatal(err)
 	}
 
-	exists, err := client.IndexExists("nginx_json_elastic_stack_example").Do()
+	exists, err := client.IndexExists("nginx_json_elastic_stack_example").Do(context.Background())
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if !exists {
 		// Create a new index.
-		createIndex, err := client.CreateIndex("nginx_json_elastic_stack_example").Do()
+		createIndex, err := client.
+			CreateIndex("nginx_json_elastic_stack_example").
+			Do(context.Background())
 		if err != nil {
 			// Handle error
 			panic(err)
@@ -40,11 +43,10 @@ func init() {
 			log.Fatalf("expected index creation to be ack'd; got: %v", createIndex.Acknowledged)
 		}
 	}
-	fmt.Println(string(buf))
 
 	putres, err := client.IndexPutTemplate("nginx_json_elastic_stack_example").
 		BodyString(string(buf)).
-		Do()
+		Do(context.Background())
 	if err != nil {
 		log.Fatalf("expected no error; got: %v", err)
 	}
@@ -68,7 +70,7 @@ func index(data string) {
 		OpType("index").
 		// Id("1").
 		BodyJson(data).
-		Do()
+		Do(context.Background())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -88,17 +90,36 @@ func main() {
 	}
 	defer file.Close()
 
+	client, err := elastic.NewSimpleClient(elastic.SetURL("http://elasticsearch:9200"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	bulkRequest := client.Bulk()
+
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
-		// Index into Elasticsearch
-		index(scanner.Text())
+		bulkRequest = bulkRequest.Add(elastic.NewBulkIndexRequest().
+			Index("nginx_json_elastic_stack_example").
+			Type("logs").
+			Doc(scanner.Text()))
 	}
 
 	if err = scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
 
-	// json.Unmarshal(file, &jsontype)
-	// fmt.Printf("Results: %v\n", jsontype)
+	log.Infof("This Bulk Requests is %s.", humanize.Bytes(bulkRequest.EstimatedSizeInBytes()))
+
+	bulkResponse, err := bulkRequest.Do(context.TODO())
+	if err != nil {
+		log.Fatal(err)
+	}
+	if bulkResponse == nil {
+		log.Errorf("expected bulkResponse to be != nil; got nil")
+	}
+
+	if bulkRequest.NumberOfActions() != 0 {
+		log.Errorf("expected bulkRequest.NumberOfActions %d; got %d", 0, bulkRequest.NumberOfActions())
+	}
 }
