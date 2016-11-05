@@ -109,7 +109,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Infof("This Bulk Requests is %s.", humanize.Bytes(bulkRequest.EstimatedSizeInBytes()))
+	log.Infof("This Bulk Requests is %s.", humanize.Bytes(uint64(bulkRequest.EstimatedSizeInBytes())))
 
 	bulkResponse, err := bulkRequest.Do(context.TODO())
 	if err != nil {
