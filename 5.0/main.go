@@ -82,6 +82,30 @@ func index(data string) {
 	}).Debug("Indexed sample.")
 }
 
+var pipeline = `{
+  "description" : "nginx pipeline",
+  "processors" : [
+    {
+      "rename": {
+        "field": "agent",
+        "target_field": "user_agent"
+      }
+    },
+    {
+      "date" : {
+        "field" : "time",
+        "formats" : ["dd/MMM/YYYY:HH:mm:ss Z"],
+      }
+    },
+    {
+      "grok": {
+        "field": "request",
+        "patterns": ["%{WORD:request_action} %{DATA:request1} HTTP/%{NUMBER:http_version}"]
+      }
+    },
+  ]
+}`
+
 func main() {
 
 	file, err := os.Open("/nginx_data/nginx_json_logs")
@@ -96,6 +120,7 @@ func main() {
 	}
 
 	bulkRequest := client.Bulk()
+	bulkRequest.Pipeline("nginx-pipeline")
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
