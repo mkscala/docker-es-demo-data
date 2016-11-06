@@ -2,7 +2,9 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"io/ioutil"
+	"net/http"
 	"os"
 
 	log "github.com/Sirupsen/logrus"
@@ -13,13 +15,12 @@ import (
 )
 
 func init() {
+	createIndex()
+	putTemplate()
+	putPipeline()
+}
 
-	// Read in nginx_json_template
-	buf, err := ioutil.ReadFile("/nginx_data/nginx_json_template.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-
+func createIndex() {
 	client, err := elastic.NewSimpleClient(elastic.SetURL("http://elasticsearch:9200"))
 	if err != nil {
 		log.Fatal(err)
@@ -43,6 +44,19 @@ func init() {
 			log.Fatalf("expected index creation to be ack'd; got: %v", createIndex.Acknowledged)
 		}
 	}
+}
+
+func putTemplate() {
+	// Read in nginx_json_template
+	buf, err := ioutil.ReadFile("/nginx_data/nginx_json_template.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	client, err := elastic.NewSimpleClient(elastic.SetURL("http://elasticsearch:9200"))
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	putres, err := client.IndexPutTemplate("nginx_json_elastic_stack_example").
 		BodyString(string(buf)).
@@ -58,53 +72,30 @@ func init() {
 	}
 }
 
-func index(data string) {
-	client, err := elastic.NewSimpleClient(elastic.SetURL("http://elasticsearch:9200"))
+func putPipeline() {
+	// Read in nginx_json_template
+	pipelineJSON, err := ioutil.ReadFile("/nginx_data/nginx-ingest-pipeline.json")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	newScan, err := client.Index().
-		Index("nginx_json_elastic_stack_example").
-		Type("logs").
-		OpType("index").
-		// Id("1").
-		BodyJson(data).
-		Do(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
+	url := "http://elasticsearch:9200/_ingest/pipeline/nginx-pipeline"
 
-	log.WithFields(log.Fields{
-		"id":    newScan.Id,
-		"index": newScan.Index,
-		"type":  newScan.Type,
-	}).Debug("Indexed sample.")
+	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(pipelineJSON))
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	log.Info("response Status:", resp.Status)
+	log.Info("response Headers:", resp.Header)
+	body, _ := ioutil.ReadAll(resp.Body)
+	log.Info("response Body:", string(body))
 }
-
-var pipeline = `{
-  "description" : "nginx pipeline",
-  "processors" : [
-    {
-      "rename": {
-        "field": "agent",
-        "target_field": "user_agent"
-      }
-    },
-    {
-      "date" : {
-        "field" : "time",
-        "formats" : ["dd/MMM/YYYY:HH:mm:ss Z"],
-      }
-    },
-    {
-      "grok": {
-        "field": "request",
-        "patterns": ["%{WORD:request_action} %{DATA:request1} HTTP/%{NUMBER:http_version}"]
-      }
-    },
-  ]
-}`
 
 func main() {
 

@@ -16,7 +16,8 @@
         }
     }, {
         "geoip": {
-            "field": "remote_ip"
+            "field": "remote_ip",
+            "properties": ["country_name","city_name","location","ip"]
         }
     }]
 }
