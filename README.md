@@ -48,13 +48,9 @@ See [`CHANGELOG.md`](https://github.com/blacktop/docker-es-demo-data/blob/master
 
 Please update the [CHANGELOG.md](https://github.com/blacktop/docker-es-demo-data/blob/master/CHANGELOG.md) and submit a [Pull Request on GitHub](https://help.github.com/articles/using-pull-requests/).
 
-### ToDo  
-
- - [ ] Add logstash stuff into a Ingest Node Put Pipeline
-
 ### License
 
 Apache License (Version 2.0)
-Copyright (c) Elastic.co
+Copyright (c) elastic.co
 
 [license]: https://img.shields.io/badge/licence-Apache%202.0-blue.svg
