@@ -88,7 +88,7 @@ func putTemplate() {
 		log.Fatal(err)
 	}
 
-	if user != "" && password != "" {
+	if username != "" && password != "" {
 		client, err = elastic.NewSimpleClient(
 			elastic.SetURL("http://elasticsearch:9200"),
 			elastic.SetBasicAuth(username, password),
@@ -177,7 +177,7 @@ func main() {
 	}
 	defer file.Close()
 
-	if user != "" && password != "" {
+	if username != "" && password != "" {
 		client, err = elastic.NewSimpleClient(
 			elastic.SetURL("http://elasticsearch:9200"),
 			elastic.SetBasicAuth(username, password),
