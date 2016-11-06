@@ -27,7 +27,7 @@ Add Nginx Demo Data to Your Elasticsearch cluster
 ```bash
 $ docker run -d --name elastic -p 9200:9200 blacktop/elasticsearch:geoip
 $ docker run -d --name kibana --link elastic:elasticsearch -p 5601:5601 blacktop/kibana
-$ docker run --rm --link elastic:elasticsearch blacktop/es-data
+$ docker run -t --rm --link elastic:elasticsearch blacktop/es-data
 ```
 
 ### Issues
