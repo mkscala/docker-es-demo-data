@@ -7,4 +7,3 @@ ingest
 
 # Add Kibana Dashboard
 import_dashboards -es http://elasticsearch:9200 -dir /nginx_data/nginx-dashboard
-# import_dashboards -es http://elasticsearch:9200 -file /nginx_data/nginx-dashboard.zip

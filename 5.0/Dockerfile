@@ -42,7 +42,7 @@ RUN apk-install -t .build-deps \
   && rm -rf /go /usr/local/go /usr/lib/go /tmp/* \
   && apk del --purge .build-deps
 
-COPY nginx_data /nginx_data
+COPY nginx_data/data.zip /nginx_data/data.zip
 COPY load.sh /load.sh
 
 ENTRYPOINT ["/load.sh"]

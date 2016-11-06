@@ -573,6 +573,7 @@ func (imp Importer) ImportArchive() error {
 		return fmt.Errorf("fail to unzip the archive: %s", archive)
 	}
 	dirs, err := getDirectories(target)
+	fmt.Println(dirs)
 	if err != nil {
 		return err
 	}
@@ -581,6 +582,7 @@ func (imp Importer) ImportArchive() error {
 	}
 
 	dirs, err = getDirectories(dirs[0])
+	fmt.Println(dirs)
 	if err != nil {
 		return err
 	}

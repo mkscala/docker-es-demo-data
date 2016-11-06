@@ -16,3 +16,10 @@ export_dashboards.py
 no-pic.patch
 output/
 beats-dashboards-5.0.0/
+
+nginx_data/nginx-ingest-pipeline.json	
+nginx_data/nginx_json_logs			
+nginx_data/nginx_json_template.json
+nginx_data/nginx-dashboard			
+nginx_data/nginx_json_kibana.json		
+nginx_data/nginx_json_logstash.conf
