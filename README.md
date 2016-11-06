@@ -9,14 +9,14 @@ Nginx Demo Data for Elasticsearch
 
 ### Dependencies
 
--	[blacktop/logstash](https://hub.docker.com/r/blacktop/logstash/)
+-	[gliderlabs/alpine:3.4](https://index.docker.io/_/gliderlabs/alpine/)
 
 ### Image Tags
 
 ```bash
 REPOSITORY          TAG                 SIZE
-blacktop/es-data   latest              321.2 MB
-blacktop/es-data   5.0                 321.2 MB
+blacktop/es-data   latest              24.93 MB
+blacktop/es-data   5.0                 24.93 MB
 blacktop/es-data   x-pack              321.2 MB
 ```
 
