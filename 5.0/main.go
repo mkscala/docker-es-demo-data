@@ -179,12 +179,12 @@ func main() {
 	defer file.Close()
 
 	if username != "" && password != "" {
-		client, err = elastic.NewSimpleClient(
+		client, err = elastic.NewClient(
 			elastic.SetURL("http://elasticsearch:9200"),
 			elastic.SetBasicAuth(username, password),
 		)
 	} else {
-		client, err = elastic.NewSimpleClient(elastic.SetURL("http://elasticsearch:9200"))
+		client, err = elastic.NewClient(elastic.SetURL("http://elasticsearch:9200"))
 	}
 
 	bulkRequest := client.Bulk()
