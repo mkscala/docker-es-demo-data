@@ -216,7 +216,7 @@ func main() {
 
 	fmt.Printf("This Bulk Requests is %s.\n", humanize.Bytes(uint64(bulkRequest.EstimatedSizeInBytes())))
 
-	bulkResponse, err := bulkRequest.Do(context.TODO())
+	bulkResponse, err := bulkRequest.Do(context.Background())
 	if err != nil {
 		log.Fatal(err)
 	}
