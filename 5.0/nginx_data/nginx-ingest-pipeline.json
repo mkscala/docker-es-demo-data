@@ -1,9 +1,8 @@
 {
     "description": "nginx pipeline",
     "processors": [{
-        "rename": {
-            "field": "agent",
-            "target_field": "user_agent"
+        "user_agent": {
+            "field": "agent"
         }
     }, {
         "date": {
@@ -14,6 +13,10 @@
         "grok": {
             "field": "request",
             "patterns": ["%{WORD:request_action} %{DATA:request1} HTTP/%{NUMBER:http_version}"]
+        }
+    }, {
+        "geoip": {
+            "field": "remote_ip"
         }
     }]
 }

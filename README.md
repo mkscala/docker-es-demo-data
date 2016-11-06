@@ -3,7 +3,7 @@ docker-es-demo-data
 
 [![CircleCI](https://circleci.com/gh/blacktop/docker-es-demo-data.png?style=shield)](https://circleci.com/gh/blacktop/docker-es-demo-data)
 [![License][license]](http://www.apache.org/licenses/LICENSE-2.0) [![Docker Stars](https://img.shields.io/docker/stars/blacktop/es-data.svg)](https://hub.docker.com/r/blacktop/es-data/) [![Docker Pulls](https://img.shields.io/docker/pulls/blacktop/es-data.svg)](https://hub.docker.com/r/blacktop/es-data/)
-[![Docker Image](https://img.shields.io/badge/docker image-37 MB-blue.svg)](https://hub.docker.com/r/blacktop/es-data/)
+[![Docker Image](https://img.shields.io/badge/docker image-321.2 MB-blue.svg)](https://hub.docker.com/r/blacktop/es-data/)
 
 Nginx Demo Data for Elasticsearch
 
@@ -35,7 +35,7 @@ Find a bug? Want more features? Find something missing in the documentation? Let
 
 ### Credits
 
- * https://github.com/elastic/examples/tree/master/ElasticStack_NGINX
+ * https://github.com/elastic/examples/tree/master/ElasticStack_NGINX-json
 
 ### CHANGELOG
 
