@@ -26,6 +26,7 @@ var (
 func init() {
 	username = os.Getenv("ES_USERNAME")
 	password = os.Getenv("ES_PASSWORD")
+	fmt.Printf("Using username: %s and password: %s\n", username, password)
 
 	fmt.Println("Creating index: nginx_json_elastic_stack_example")
 	createIndex()
