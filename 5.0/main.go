@@ -3,11 +3,9 @@ package main
 import (
 	"archive/zip"
 	"bufio"
-	"bytes"
 	"fmt"
 	"io"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"path/filepath"
 
@@ -113,23 +111,37 @@ func putTemplate() {
 }
 
 func putPipeline() {
+	var err error
+	var client *elastic.Client
+
 	// Read in nginx_json_template
-	pipelineJSON, err := ioutil.ReadFile("/nginx_data/nginx-ingest-pipeline.json")
+	buf, err := ioutil.ReadFile("/nginx_data/nginx-ingest-pipeline.json")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	url := "http://elasticsearch:9200/_ingest/pipeline/nginx-pipeline"
-
-	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(pipelineJSON))
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
+	if username != "" && password != "" {
+		client, err = elastic.NewSimpleClient(
+			elastic.SetURL("http://elasticsearch:9200"),
+			elastic.SetBasicAuth(username, password),
+		)
+	} else {
+		client, err = elastic.NewSimpleClient(elastic.SetURL("http://elasticsearch:9200"))
 	}
-	defer resp.Body.Close()
+
+	putres, err := client.IngestPutPipeline("nginx-pipeline").
+		BodyString(string(buf)).
+		Do(context.Background())
+
+	if err != nil {
+		log.Fatalf("expected no error; got: %v", err)
+	}
+	if putres == nil {
+		log.Fatalf("expected response; got: %v", putres)
+	}
+	if !putres.Acknowledged {
+		log.Fatalf("expected ingest pipeline to be ack'd; got: %v", putres.Acknowledged)
+	}
 }
 
 func unzip(archive, target string) error {

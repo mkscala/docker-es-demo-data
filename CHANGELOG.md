@@ -3,44 +3,17 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
-[5.0] - 2016-08-01
+[5.0] - 2016-11-06
 ------------------
 
 ### Fixed
 
 ### Added
 
--	krallin/tini
--	tianon/gosu
+-	ability to pass in basic auth creds for elasticsearch clusters that need it
 
 ### Removed
 
-### Changed
-
-[2.3] - 2016-08-01
-------------------
-
-### Fixed
-
-### Added
-
--	krallin/tini
--	tianon/gosu
-
-### Removed
-
-### Changed
-
-[1.5] - 2016-08-01
-------------------
-
-### Fixed
-
-### Added
-
--	krallin/tini
--	tianon/gosu
-
-### Removed
+-	use of logstash (I want to use the new ingest nodes instead)
 
 ### Changed
