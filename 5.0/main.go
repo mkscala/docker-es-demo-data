@@ -19,12 +19,12 @@ import (
 )
 
 func init() {
-	log.Info("Creating index: nginx_json_elastic_stack_example")
+	fmt.Println("Creating index: nginx_json_elastic_stack_example")
 	createIndex()
 	unzip("/nginx_data/data.zip", "/nginx_data")
-	log.Info("Adding template: nginx_json_elastic_stack_example")
+	fmt.Println("Adding template: nginx_json_elastic_stack_example")
 	putTemplate()
-	log.Info("Adding ingest pipeline: nginx-pipeline")
+	fmt.Println("Adding ingest pipeline: nginx-pipeline")
 	putPipeline()
 }
 
@@ -163,7 +163,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Infof("This Bulk Requests is %s.", humanize.Bytes(uint64(bulkRequest.EstimatedSizeInBytes())))
+	fmt.Printf("This Bulk Requests is %s.\n", humanize.Bytes(uint64(bulkRequest.EstimatedSizeInBytes())))
 
 	bulkResponse, err := bulkRequest.Do(context.TODO())
 	if err != nil {
