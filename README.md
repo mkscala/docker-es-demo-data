@@ -35,6 +35,8 @@ $ docker run -d --name kibana --link elastic:elasticsearch -p 5601:5601 blacktop
 $ docker run --rm --link elastic:elasticsearch -e ES_USERNAME=elastic -e ES_PASSWORD=changeme blacktop/es-data
 ```
 
+> **NOTE:** I have noticed that sometimes the `geoip.city_name` etc doesn't work.  I believe this is a bug in the **ingest-geoip** plugin.  If you try again it might work.
+
 ### Issues
 
 Find a bug? Want more features? Find something missing in the documentation? Let me know! Please don't hesitate to [file an issue](https://github.com/blacktop/docker-es-demo-data/issues/new)
