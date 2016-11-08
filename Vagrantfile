@@ -26,7 +26,7 @@ Vagrant.configure("2") do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  # config.vm.network "private_network", ip: "192.168.33.10"
+  config.vm.network "private_network", ip: "192.168.33.10"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -74,5 +74,15 @@ Vagrant.configure("2") do |config|
     apt-get update
     echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | sudo debconf-set-selections
     apt-get install -y oracle-java8-installer elasticsearch kibana
+    sudo echo "vm.max_map_count=262144" >> /etc/sysctl.conf
+    sudo sysctl -w vm.max_map_count=262144
+    sudo echo "network.host: 0.0.0.0" >> /etc/elasticsearch/elasticsearch.yml
+    # sudo echo "bootstrap.memory_lock: true" >> /etc/elasticsearch/elasticsearch.yml
+    sudo update-rc.d elasticsearch defaults 95 10
+    sudo -i service elasticsearch start
+    sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install -b ingest-geoip
+    sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install -b ingest-user-agent
+    sudo update-rc.d kibana defaults 95 10
+    sudo -i service kibana start
   SHELL
 end
