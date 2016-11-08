@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/dustin/go-humanize"
@@ -202,12 +203,34 @@ func main() {
 	bulkRequest := client.Bulk()
 	bulkRequest.Pipeline("nginx-pipeline")
 
+	bulkSize, err := strconv.ParseInt(os.Getenv("BULK_SIZE"), 10, 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
+
 		bulkRequest = bulkRequest.Add(elastic.NewBulkIndexRequest().
 			Index("nginx_json_elastic_stack_example").
 			Type("logs").
 			Doc(scanner.Text()))
+
+		if bulkRequest.EstimatedSizeInBytes() > bulkSize {
+			fmt.Printf("This Bulk Requests is %s.\n", humanize.Bytes(uint64(bulkRequest.EstimatedSizeInBytes())))
+
+			bulkResponse, err := bulkRequest.Do(context.Background())
+			if err != nil {
+				log.Fatal(err)
+			}
+			if bulkResponse == nil {
+				log.Errorf("expected bulkResponse to be != nil; got nil")
+			}
+
+			if bulkRequest.NumberOfActions() != 0 {
+				log.Errorf("expected bulkRequest.NumberOfActions %d; got %d", 0, bulkRequest.NumberOfActions())
+			}
+		}
 	}
 
 	if err = scanner.Err(); err != nil {

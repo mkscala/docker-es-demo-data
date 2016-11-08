@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 -	ability to pass in basic auth creds for elasticsearch clusters that need it
+-   ability to change the Bulk ingest size with the env var `BULK_SIZE` (defaults to 5MB)
 
 ### Removed
 
