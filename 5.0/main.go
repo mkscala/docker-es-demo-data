@@ -18,11 +18,13 @@ import (
 )
 
 var (
+	url      string
 	username string
 	password string
 )
 
 func init() {
+	url = getOpt("ES_URL", "http://elasticsearch:9200")
 	username = os.Getenv("ES_USERNAME")
 	password = os.Getenv("ES_PASSWORD")
 	fmt.Printf("Using username: %s and password: %s\n", username, password)
@@ -39,6 +41,14 @@ func init() {
 	putPipeline()
 }
 
+func getOpt(name, dfault string) string {
+	value := os.Getenv(name)
+	if value == "" {
+		value = dfault
+	}
+	return value
+}
+
 func createIndex() {
 
 	var err error
@@ -46,11 +56,11 @@ func createIndex() {
 
 	if username != "" && password != "" {
 		client, err = elastic.NewSimpleClient(
-			elastic.SetURL("http://elasticsearch:9200"),
+			elastic.SetURL(url),
 			elastic.SetBasicAuth(username, password),
 		)
 	} else {
-		client, err = elastic.NewSimpleClient(elastic.SetURL("http://elasticsearch:9200"))
+		client, err = elastic.NewSimpleClient(elastic.SetURL(url))
 	}
 
 	if err != nil {
@@ -90,11 +100,11 @@ func putTemplate() {
 
 	if username != "" && password != "" {
 		client, err = elastic.NewSimpleClient(
-			elastic.SetURL("http://elasticsearch:9200"),
+			elastic.SetURL(url),
 			elastic.SetBasicAuth(username, password),
 		)
 	} else {
-		client, err = elastic.NewSimpleClient(elastic.SetURL("http://elasticsearch:9200"))
+		client, err = elastic.NewSimpleClient(elastic.SetURL(url))
 	}
 
 	putres, err := client.IndexPutTemplate("nginx_json_elastic_stack_example").
@@ -123,11 +133,11 @@ func putPipeline() {
 
 	if username != "" && password != "" {
 		client, err = elastic.NewSimpleClient(
-			elastic.SetURL("http://elasticsearch:9200"),
+			elastic.SetURL(url),
 			elastic.SetBasicAuth(username, password),
 		)
 	} else {
-		client, err = elastic.NewSimpleClient(elastic.SetURL("http://elasticsearch:9200"))
+		client, err = elastic.NewSimpleClient(elastic.SetURL(url))
 	}
 
 	putres, err := client.IngestPutPipeline("nginx-pipeline").
@@ -193,11 +203,11 @@ func main() {
 
 	if username != "" && password != "" {
 		client, err = elastic.NewClient(
-			elastic.SetURL("http://elasticsearch:9200"),
+			elastic.SetURL(url),
 			elastic.SetBasicAuth(username, password),
 		)
 	} else {
-		client, err = elastic.NewClient(elastic.SetURL("http://elasticsearch:9200"))
+		client, err = elastic.NewClient(elastic.SetURL(url))
 	}
 
 	bulkRequest := client.Bulk()
