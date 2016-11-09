@@ -37,6 +37,12 @@ $ docker run --rm --link elastic:elasticsearch -e ES_USERNAME=elastic -e ES_PASS
 
 ![es-data](https://raw.githubusercontent.com/blacktop/docker-es-demo-data/master/add-data-dashboard.png)
 
+To use with a non-docker Elasticsearch node  
+
+```bash
+$ docker run --rm -e ES_URL=http://localhost:9200 blacktop/es-data
+```
+
 ### Issues
 
 Find a bug? Want more features? Find something missing in the documentation? Let me know! Please don't hesitate to [file an issue](https://github.com/blacktop/docker-es-demo-data/issues/new)
