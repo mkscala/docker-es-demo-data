@@ -35,7 +35,7 @@ $ docker run -d --name kibana --link elastic:elasticsearch -p 5601:5601 blacktop
 $ docker run --rm --link elastic:elasticsearch -e ES_USERNAME=elastic -e ES_PASSWORD=changeme blacktop/es-data
 ```
 
-![es-data](https://raw.githubusercontent.com/blacktop/es-data/master/add-data-dashboard.png)
+![es-data](https://raw.githubusercontent.com/blacktop/docker-es-demo-data/master/add-data-dashboard.png)
 
 ### Issues
 
