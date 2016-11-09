@@ -11,7 +11,7 @@ import (
 	"strconv"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/dustin/go-humanize"
+	humanize "github.com/dustin/go-humanize"
 	"golang.org/x/net/context"
 
 	elastic "gopkg.in/olivere/elastic.v5"
@@ -29,13 +29,13 @@ func init() {
 	password = os.Getenv("ES_PASSWORD")
 	fmt.Printf("Using username: %s and password: %s\n", username, password)
 
-	fmt.Println("Creating index: nginx_json_elastic_stack_example")
-	createIndex()
-
 	unzip("/nginx_data/data.zip", "/nginx_data")
 
 	fmt.Println("Adding template: nginx_json_elastic_stack_example")
 	putTemplate()
+
+	fmt.Println("Creating index: nginx_json_elastic_stack_example")
+	createIndex()
 
 	fmt.Println("Adding ingest pipeline: nginx-pipeline")
 	putPipeline()
@@ -62,7 +62,6 @@ func createIndex() {
 	} else {
 		client, err = elastic.NewSimpleClient(elastic.SetURL(url))
 	}
-
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -106,18 +105,44 @@ func putTemplate() {
 	} else {
 		client, err = elastic.NewSimpleClient(elastic.SetURL(url))
 	}
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	putres, err := client.IndexPutTemplate("nginx_json_elastic_stack_example").
 		BodyString(string(buf)).
 		Do(context.Background())
 	if err != nil {
-		log.Fatalf("expected no error; got: %v", err)
+		log.Fatal(err)
 	}
+	fmt.Println(putres)
 	if putres == nil {
 		log.Fatalf("expected response; got: %v", putres)
 	}
 	if !putres.Acknowledged {
 		log.Fatalf("expected index template to be ack'd; got: %v", putres.Acknowledged)
+	}
+
+	// _, err = client.PutTemplate().Do(context.Background())
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	exists, err := client.IndexTemplateExists("nginx_json_elastic_stack_example").Do(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if !exists {
+		putres, err := client.IndexPutTemplate("nginx_json_elastic_stack_example").
+			BodyString(string(buf)).
+			Do(context.Background())
+		if err != nil {
+			log.Fatal(err)
+		}
+		if !putres.Acknowledged {
+			log.Fatalf("expected index template to be ack'd; got: %v", putres.Acknowledged)
+		}
 	}
 }
 
@@ -138,6 +163,9 @@ func putPipeline() {
 		)
 	} else {
 		client, err = elastic.NewSimpleClient(elastic.SetURL(url))
+	}
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	putres, err := client.IngestPutPipeline("nginx-pipeline").
@@ -202,12 +230,15 @@ func main() {
 	defer file.Close()
 
 	if username != "" && password != "" {
-		client, err = elastic.NewClient(
+		client, err = elastic.NewSimpleClient(
 			elastic.SetURL(url),
 			elastic.SetBasicAuth(username, password),
 		)
 	} else {
-		client, err = elastic.NewClient(elastic.SetURL(url))
+		client, err = elastic.NewSimpleClient(elastic.SetURL(url))
+	}
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	bulkRequest := client.Bulk()
@@ -220,7 +251,15 @@ func main() {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-
+		// _, err := client.Index().
+		// 	Index("nginx_json_elastic_stack_example").
+		// 	Type("logs").
+		// 	BodyString(scanner.Text()).
+		// 	Pipeline("nginx-pipeline").
+		// 	Do(context.Background())
+		// if err != nil {
+		// 	log.Fatal(err)
+		// }
 		bulkRequest = bulkRequest.Add(elastic.NewBulkIndexRequest().
 			Index("nginx_json_elastic_stack_example").
 			Type("logs").

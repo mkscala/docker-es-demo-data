@@ -23,6 +23,7 @@ Vagrant.configure("2") do |config|
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
   config.vm.network "forwarded_port", guest: 9200, host: 9200
+  config.vm.network "forwarded_port", guest: 5601, host: 5601
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -77,12 +78,13 @@ Vagrant.configure("2") do |config|
     sudo echo "vm.max_map_count=262144" >> /etc/sysctl.conf
     sudo sysctl -w vm.max_map_count=262144
     sudo echo "network.host: 0.0.0.0" >> /etc/elasticsearch/elasticsearch.yml
+    sudo echo "server.host: 0.0.0.0" >> /etc/kibana/kibana.yml
     # sudo echo "bootstrap.memory_lock: true" >> /etc/elasticsearch/elasticsearch.yml
     sudo update-rc.d elasticsearch defaults 95 10
-    sudo -i service elasticsearch start
     sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install -b ingest-geoip
     sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install -b ingest-user-agent
     sudo update-rc.d kibana defaults 95 10
+    sudo -i service elasticsearch start
     sudo -i service kibana start
   SHELL
 end
